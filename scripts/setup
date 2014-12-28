@@ -1,0 +1,23 @@
+#!/bin/sh
+if [ ! -d ~/app.git ]; then
+mkdir ~/app.git
+sudo mkdir -p /data/app
+sudo chmod 777 /data/app
+cd ~/app.git
+git init --bare
+cat << EOF > hooks/post-receive
+#!/bin/sh
+git --work-tree=/data/app clean -fd --exclude node_modules
+git --work-tree=/data/app checkout --force
+docker run --rm -v /data/app:/data/app app bash -c 'cd /data/app; npm install --production; npm prune --production'
+sudo chown -R core:core /data/app/node_modules
+fleetctl stop ~/instances/* && fleetctl start ~/instances/*
+EOF
+chmod +x hooks/post-receive
+cat << EOF > /data/app/index.js
+require('http').createServer(function(req, res) {
+  res.writeHead(200, {"Content-Type":"text/plain; charset=utf-8"});
+  res.end('Hello Opshell!\n');
+}).listen(8080);
+EOF
+fi

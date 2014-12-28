@@ -1,0 +1,9 @@
+[Unit]
+Description=Database backup
+Requires=docker.service
+
+[Timer]
+OnCalendar=daily
+
+[X-Fleet]
+X-ConditionMachineOf=mongodb-backup.service

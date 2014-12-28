@@ -1,0 +1,9 @@
+[template]
+
+src = "nginx.tmpl"
+dest = "/etc/nginx/sites-available/default"
+keys = [ "/services/app" ]
+owner = "root"
+mode = "0644"
+#check_cmd = "/usr/sbin/nginx -t"
+reload_cmd = "/usr/sbin/service nginx reload"

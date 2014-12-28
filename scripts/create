@@ -1,0 +1,7 @@
+#!/bin/sh
+# opshell create myapp
+# Usage: opshell COMMAND [--app APP] [command-specific-options]
+# APP should default to name of current dir/repo
+
+
+

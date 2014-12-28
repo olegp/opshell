@@ -1,0 +1,19 @@
+# app@name-port.service
+[Unit]
+Description=App %i
+Requires=etcd.service
+Requires=docker.service
+
+After=etcd.service
+After=docker.service
+
+[Service]
+TimeoutSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker kill app.%i
+ExecStartPre=-/usr/bin/docker rm app.%i
+ExecStart=/bin/bash -c 'docker run --rm --name app.%i -v /data/app:/data/app -p ${COREOS_PRIVATE_IPV4}:%i:8080 -e "DATABASE_HOST=$(etcdctl get /services/mongodb)" app'
+ExecStop=/usr/bin/docker stop app.%i
+ExecStartPost=-/usr/bin/etcdctl set /services/app/${COREOS_PRIVATE_IPV4}:%i ${COREOS_PRIVATE_IPV4}:%i
+ExecStopPost=-/usr/bin/etcdctl rm /services/app/${COREOS_PRIVATE_IPV4}:%i

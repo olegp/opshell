@@ -1,0 +1,18 @@
+[Unit]
+Description=MongoDB
+Requires=docker.service
+After=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutSec=0
+ExecStartPre=-/usr/bin/docker kill mongodb1
+ExecStartPre=-/usr/bin/docker rm mongodb1
+#ExecStartPre=/usr/bin/docker pull mongodb
+ExecStart=/usr/bin/docker run --rm --name mongodb1 -v /data/mongodb:/data/mongodb -p ${COREOS_PRIVATE_IPV4}:27017:27017 mongodb
+ExecStartPost=/usr/bin/etcdctl set /services/mongodb ${COREOS_PRIVATE_IPV4}:27017
+ExecStop=/usr/bin/docker stop mongodb1
+ExecStopPost=/usr/bin/etcdctl rm /services/mongodb
+
+[X-Fleet]
+X-Conflicts=mongodb.service

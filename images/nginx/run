@@ -1,0 +1,10 @@
+#!/bin/bash
+export ETCD_PORT=${ETCD_PORT:-4001}
+export HOST_IP=${HOST_IP:-172.17.8.101}
+export ETCD=$HOST_IP:$ETCD_PORT
+until confd -onetime -node $ETCD -config-file /etc/confd/conf.d/nginx.toml; do
+    sleep 5
+done
+confd -interval 10 -node $ETCD -config-file /etc/confd/conf.d/nginx.toml &
+service nginx start
+tail -f /var/log/nginx/*.log

@@ -1,0 +1,11 @@
+#!/bin/sh
+SCRIPT_PATH="`dirname \"$0\"`"
+PORTS=(10001 10002)
+echo "Stopping units"
+fleetctl list-units | grep service | awk '{print $1}' | { read unit; fleetctl stop $unit; fleetctl destroy $unit; }
+echo "Submitting units"
+fleetctl submit $SCRIPT_PATH/../units/*
+echo "Starting lb & db units"
+fleetctl start nginx.service mongodb.service
+echo "Starting app units"
+for PORT in "${PORTS[@]}"; do fleetctl start app@${PORT}.service; done

@@ -1,0 +1,12 @@
+#TODO backup all databases
+#TODO use /data/backups/mongodb dir
+[Unit]
+Description=MongoDB backup
+Requires=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/usr/bin/docker run --rm -v /data/mongodb:/data/mongodb -v /data/backups:/data/backups mongodb bash -c 'export TIME=`date +"%%Y%%m%%d"`; mongodump -h ${COREOS_PRIVATE_IPV4}:27017 --db blog && tar -czf ./backups/backup-$TIME.tar.gz ./dump/ && rm -rf dump'
+
+[X-Fleet]
+X-ConditionMachineOf=mongodb.service

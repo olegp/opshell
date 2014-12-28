@@ -1,0 +1,9 @@
+#!/bin/sh
+SCRIPT_PATH="`dirname \"$0\"`"
+docker build -t="base" $SCRIPT_PATH/../images/base/
+docker build -t="app" $SCRIPT_PATH/../images/app/
+docker build -t="mongodb" $SCRIPT_PATH/../images/mongodb/
+docker build -t="nginx" $SCRIPT_PATH/../images/nginx/
+
+
+
