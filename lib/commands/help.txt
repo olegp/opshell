@@ -1,0 +1,1 @@
+Usage: opshell COMMAND [--app APP] [command-specific-options]

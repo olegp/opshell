@@ -1,0 +1,25 @@
+#!/bin/sh
+# Usage: opshell scale APP COUNT
+#TODO The app name is automatically detected by scanning the git remotes for the current working copy, so you don’t have to specify which app to operate on explicitly.
+APP=$1
+SCALE=$2
+#COUNT=$(fleetctl list-units | grep app@$APP | grep running | wc -l)
+COUNT=$(fleetctl list-units | grep app@$APP | wc -l)
+if [ $SCALE -eq $COUNT ]; then exit; fi
+if [ $COUNT -lt $SCALE ]
+then
+  while [ $COUNT -lt $SCALE ]
+  do
+    PORT=$[  1024 + $[ RANDOM % (65536 - 1024) ]]
+    # TODO check port is available
+    fleetctl start app@$APP-$PORT.service
+    COUNT=$[$COUNT+1]
+  done
+fi
+if [ $COUNT -gt $SCALE ]
+then
+  COUNT=$[$COUNT - $SCALE]
+  fleetctl list-units | grep -m $COUNT app@$APP | awk '{print $1}' | while read -r UNIT ; do
+    fleetctl destroy $UNIT
+  done
+fi

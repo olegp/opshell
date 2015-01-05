@@ -1,2 +1,2 @@
 #!/bin/sh
-fleetctl list-units | grep app | awk '{print $1}' | { read unit; fleetctl stop $unit; fleetctl start $unit; }
+fleetctl list-units | grep app | awk '{print $1}' | { read UNIT; fleetctl stop $UNIT; fleetctl start $UNITt; }

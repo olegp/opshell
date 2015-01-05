@@ -1,0 +1,2 @@
+#!/usr/bin/env node
+require('common-node').run(require('path').resolve(module.filename, '../../lib/index'));

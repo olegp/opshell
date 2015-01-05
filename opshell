@@ -1,5 +1,6 @@
 #!/bin/sh
-SCRIPT=${2:-init}
+#SCRIPT=${2:-init}
+SCRIPT=$2
 ssh $1 mkdir -p /home/core/opshell/
 rsync -az --exclude=".*" . -e ssh $1:/home/core/opshell/
-ssh $1 /home/core/opshell-dev/scripts/$SCRIPT
+ssh $1 /home/core/opshell-dev/scripts/$SCRIPT $3 $4

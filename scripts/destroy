@@ -1,0 +1,8 @@
+#!/bin/sh
+# Usage: opshell destroy MYAPP
+#TODO opshell scale 0
+#TODO etcdctl rm --dir /apps/$APP
+APP=$1
+rm -r ~/$APP.git
+sudo rm -r /data/apps/$APP
+

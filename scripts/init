@@ -1,5 +1,4 @@
 #!/bin/sh
 SCRIPT_PATH="`dirname \"$0\"`"
-#$SCRIPT_PATH/setup
 $SCRIPT_PATH/build
-$SCRIPT_PATH/restart
+#$SCRIPT_PATH/restart

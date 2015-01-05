@@ -1,9 +1,10 @@
 [template]
 
 src = "nginx.tmpl"
-dest = "/etc/nginx/sites-available/default"
-keys = [ "/services/app" ]
+dest = "/tmp/nginx.conf"
+keys = [ "/apps" ]
 owner = "root"
 mode = "0644"
 #check_cmd = "/usr/sbin/nginx -t"
-reload_cmd = "/usr/sbin/service nginx reload"
+# TODO remove sed rewriting and pull app names from etcd
+reload_cmd = "/bin/bash -c 'sed \"s/\\/apps\\///g\" /tmp/nginx.conf > /etc/nginx/sites-available/default && service nginx reload'"
