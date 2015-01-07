@@ -1,18 +1,21 @@
-# TODO app@name-port.service
 [Unit]
 Description=App %i
 Requires=etcd.service
 Requires=docker.service
+Requires=mongodb.service
+Requires=nginx.service
 
 After=etcd.service
 After=docker.service
+After=mongodb.service
+After=nginx.service
 
 [Service]
 TimeoutSec=0
 KillMode=none
 EnvironmentFile=/etc/environment
-#ExecStartPre=-/usr/bin/docker kill app.%i
-xecStartPre=-/usr/bin/docker rm app.%i
+ExecStartPre=-/usr/bin/docker kill app.%i
+ExecStartPre=-/usr/bin/docker rm app.%i
 #ExecStart=/bin/bash -c 'docker run --rm --name app.%i -v /data/app:/data/app -p ${COREOS_PRIVATE_IPV4}:%i:8080 -e "DATABASE_HOST=$(etcdctl get /services/mongodb)" app'
 ExecStartPre=/bin/bash -c 'echo "APP=`echo %i | cut -d \- -f 1`\nPORT=`echo %i | cut -d \- -f 2`" > /tmp/%i'
 ExecStart=/bin/bash -c 'export $(cat /tmp/%i | xargs) && docker run --rm --name app.%i -v /data/apps/$APP:/data/app -p ${COREOS_PRIVATE_IPV4}:$PORT:8080 -e "DATABASE_HOST=$(etcdctl get /services/mongodb)" app'

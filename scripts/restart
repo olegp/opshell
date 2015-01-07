@@ -1,7 +1,0 @@
-#!/bin/sh
-SCRIPT_PATH="`dirname \"$0\"`"
-fleetctl list-units | grep service | awk '{print $1}' | { read UNIT; fleetctl destroy $UNIT; }
-fleetctl submit $SCRIPT_PATH/../units/*
-fleetctl start nginx.service mongodb.service
-# NOTE this destroys but doesn't start app@ units
-# TODO refactor to restart all app@ units

@@ -1,1 +1,3 @@
 Usage: opshell COMMAND [--app APP] [command-specific-options]
+
+// https://devcenter.heroku.com/articles/using-the-cli

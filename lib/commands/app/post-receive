@@ -1,0 +1,6 @@
+#!/bin/sh
+git --work-tree=/data/apps/$APP clean -fd --exclude node_modules
+git --work-tree=/data/apps/$APP checkout --force
+docker run --rm -v /data/apps/$APP:/data/apps/$APP app bash -c 'cd /data/apps/$APP; npm install --production; npm prune --production'
+sudo chown -R core:core /data/apps/$APP/node_modules
+fleetctl stop ~/instances/* && fleetctl start ~/instances/*

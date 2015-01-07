@@ -1,4 +1,0 @@
-#!/bin/sh
-SCRIPT_PATH="`dirname \"$0\"`"
-$SCRIPT_PATH/build
-#$SCRIPT_PATH/restart
