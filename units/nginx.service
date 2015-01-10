@@ -4,12 +4,14 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-TimeoutStartSec=0
+TimeoutSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
 ExecStartPre=-/usr/bin/docker kill nginx1
 ExecStartPre=-/usr/bin/docker rm nginx1
 #ExecStartPre=/usr/bin/docker pull nginx
-ExecStart=/usr/bin/docker run --rm --name nginx1 -p 80:80 nginx
-TimeoutStopSec=0
+ExecStartPre=-/usr/bin/env
+ExecStart=/usr/bin/docker run --rm --name nginx1 -p 80:80 -e "HOST_IP=${COREOS_PRIVATE_IPV4}" nginx
 ExecStop=/usr/bin/docker stop nginx1
 
 [X-Fleet]

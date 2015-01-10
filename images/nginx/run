@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Host IP:" $HOST_IP
 export ETCD_PORT=${ETCD_PORT:-4001}
 export HOST_IP=${HOST_IP:-172.17.8.101}
 export ETCD=$HOST_IP:$ETCD_PORT

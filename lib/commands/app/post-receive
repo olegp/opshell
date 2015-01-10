@@ -1,6 +1,6 @@
 #!/bin/sh
-git --work-tree=/data/apps/$APP clean -fd --exclude node_modules
-git --work-tree=/data/apps/$APP checkout --force
-docker run --rm -v /data/apps/$APP:/data/apps/$APP app bash -c 'cd /data/apps/$APP; npm install --production; npm prune --production'
-sudo chown -R core:core /data/apps/$APP/node_modules
-fleetctl stop ~/instances/* && fleetctl start ~/instances/*
+git --work-tree=/data/apps/{0} clean -fd --exclude node_modules
+git --work-tree=/data/apps/{0} checkout --force
+docker run --rm -v /data/apps/{0}:/data/apps/{0} app bash -c 'cd /data/apps/{0}; npm install --production; npm prune --production'
+sudo chown -R core:core /data/apps/{0}/node_modules
+fleetctl list-units | grep app@{0} | awk '{print $1}' | { while read UNIT; do fleetctl stop $UNIT; fleetctl start $UNIT; done }

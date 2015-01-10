@@ -16,11 +16,10 @@ KillMode=none
 EnvironmentFile=/etc/environment
 ExecStartPre=-/usr/bin/docker kill app.%i
 ExecStartPre=-/usr/bin/docker rm app.%i
-#ExecStart=/bin/bash -c 'docker run --rm --name app.%i -v /data/app:/data/app -p ${COREOS_PRIVATE_IPV4}:%i:8080 -e "DATABASE_HOST=$(etcdctl get /services/mongodb)" app'
 ExecStartPre=/bin/bash -c 'echo "APP=`echo %i | cut -d \- -f 1`\nPORT=`echo %i | cut -d \- -f 2`" > /tmp/%i'
-ExecStart=/bin/bash -c 'export $(cat /tmp/%i | xargs) && docker run --rm --name app.%i -v /data/apps/$APP:/data/app -p ${COREOS_PRIVATE_IPV4}:$PORT:8080 -e "DATABASE_HOST=$(etcdctl get /services/mongodb)" app'
-
+ExecStartPre=/bin/bash -c 'export $(cat /tmp/%i | xargs) && etcdctl ls /apps/$APP/env/ | { while read IN; do KEY=$${IN##/*/}; VALUE=$(etcdctl get /apps/$APP/env/$KEY); echo $KEY=$VALUE; done } >> /tmp/%i'
+ExecStart=/bin/bash -c 'export $(cat /tmp/%i | xargs) && docker run --rm --name app.%i -v /data/apps/$APP:/data/app -p ${COREOS_PRIVATE_IPV4}:$PORT:8080 -e "DATABASE_HOST=$(etcdctl get /services/mongodb)" --env-file /tmp/%i app'
 ExecStop=/usr/bin/docker stop app.%i
-ExecStartPost=-/bin/bash -c 'export $(cat /tmp/%i | xargs) && etcdctl set /apps/$APP/$PORT $COREOS_PRIVATE_IPV4:$PORT'
-ExecStopPost=-/bin/bash -c 'export $(cat /tmp/%i | xargs) && etcdctl rm /apps/$APP/$PORT'
+ExecStartPost=-/bin/bash -c 'export $(cat /tmp/%i | xargs) && etcdctl set /apps/$APP/units/$PORT $COREOS_PRIVATE_IPV4:$PORT'
+ExecStopPost=-/bin/bash -c 'export $(cat /tmp/%i | xargs) && etcdctl rm /apps/$APP/units/$PORT'
 ExecStopPost=-/bin/bash -c 'rm /tmp/%i'

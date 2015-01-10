@@ -1,7 +1,7 @@
 FROM base
 
 RUN apt-get install -y curl
-RUN curl -qL https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.0-linux-amd64 -o /usr/local/bin/confd && chmod +x /usr/local/bin/confd
+RUN curl -qL https://github.com/kelseyhightower/confd/releases/download/v0.7.1/confd-0.7.1-linux-amd64 -o /usr/local/bin/confd && chmod +x /usr/local/bin/confd
 RUN chmod +x /usr/local/bin/confd
 RUN mkdir -p /etc/confd/conf.d
 RUN mkdir -p /etc/confd/templates

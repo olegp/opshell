@@ -1,23 +1,20 @@
-{{ range $index, $app := .apps }}
-    {{ $len := $app.Nodes.Len }}
-    {{if gt $len 0}}
-        upstream pool{{ $index }} {
-        {{ range $server := $app.Nodes }}
-            server {{ $server.Value }};
-        {{ end }}
-        }
+{{range $app := lsdir "/apps"}}
+upstream {{base $app}} {
+    {{$units := printf "/apps/%s/units/*" $app}}{{range gets $units}}
+    server {{.Value}};
+    {{end}}
+}
 
-        server {
-            listen 80;
-            server_name  {{ $app.Key }}.*;
+server {
+    listen 80;
+    server_name {{$hosts := printf "/apps/%s/hosts/*" $app}}{{range gets $hosts}}{{.Value}} {{end}};
+    location / {
+        proxy_pass http://{{base $app}};
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+{{end}}
 
-            location / {
-                proxy_pass http://pool{{ $index }};
-                proxy_redirect off;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            }
-        }
-    {{ end }}
-{{ end }}
