@@ -4,6 +4,8 @@
 
 Opshell is a minimal [Node.js](http://nodejs.org/) "PaaS" used for running a single web app in a cluster consisting of a load balancer, scalable web tier and [MongoDB](https://www.mongodb.org/) database using [Docker](https://docker.com/) and [CoreOS](https://coreos.com/). It can be used as is or as a starting point for your own deployment. Opshell runs on any platform supported by CoreOS, including [Vagrant](https://www.vagrantup.com) (for development), [Digital Ocean](https://www.digitalocean.com), AWS EC2 and your own hardware.
 
+If you have 20 or so minutes, check [this video of a talk](http://developers.almamedia.fi/helsinkijs-devopsfinland-january-2015/#nodejs-paas-using-docker--coreos) introducing Opshell.
+
 Current features include:
 
 - `git push` based deployment
